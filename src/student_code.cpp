@@ -137,12 +137,7 @@ namespace CGL
     FaceIter f0 = h0->face();
     FaceIter f1 = h3->face();
 
-    /* setNeighbors( HalfedgeIter next,
-                            HalfedgeIter twin,
-                            VertexIter vertex,
-                            EdgeIter edge,
-                            FaceIter face )
-    */
+    // setNeighbors(next, twin, vertex, edge, face)
     h0->setNeighbors(h5, h3, v2, e0, f0);
     h1->setNeighbors(h0, h6, v1, e1, f0);
     h2->setNeighbors(h4, h9, v2, e2, f1);
@@ -183,6 +178,40 @@ namespace CGL
     VertexIter v3 = h5->vertex();
     FaceIter f0 = h0->face();
     FaceIter f1 = h3->face();
+
+    VertexIter v4 = this.newVertex();
+    FaceIter f2 = this.newFace();
+    FaceIter f3 = this.newFace();
+    EdgeIter e1 = this.newEdge();
+    EdgeIter e2 = this.newEdge();
+    EdgeIter e3 = this.newEdge();
+    HalfedgeIter h10 = this.newHalfedge();
+    HalfedgeIter h11 = this.newHalfedge();
+    HalfedgeIter h12 = this.newHalfedge();
+    HalfedgeIter h13 = this.newHalfedge();
+    HalfedgeITer h14 = this.newHalfedge();
+    HalfedgeIter h15 = this.newHalfedge();
+
+    v4->position() = (v2->position() + v3->position()) / 2.0;
+    v4->halfedge() = h0;
+
+    f2->halfedge() = h10;
+    f3->halfedge() = h13;
+
+    e1->halfedge() = h10;
+    e2->halfedge() = h2;
+    e3->halfedge() = h4;
+
+    // setNeighbors(next, twin, vertex, edge, face)
+    h10->setNeighbors(h11, h13, v0, e1, f2);
+    h11->setNeighbors(h12, h2, v4, e2, f2);
+    h12->setNeighbors(h10, h9, v2, h9->edge(), f2);
+    h13->setNeighbors(h14, h10, v4, e1, f3);
+    h14->setNeighbors(h15, h8, v0, h8->edge(), f3);
+    h15->setNeighbors(h13, h4, v3, e3, f3);
+
+    h0->setNeighbors(h1, h3, v4, e0, f0);
+    
 
     return e0->halfedge()->vertex();
   }
