@@ -211,9 +211,12 @@ namespace CGL
     h15->setNeighbors(h13, h4, v3, e3, f3);
 
     h0->setNeighbors(h1, h3, v4, e0, f0);
+    h2->setNeighbors(h0, h11, v2, e2, f0);
+    h4->setNeighbors(h5, h15, v4, e3, f1);
+    h8->setNeighbors(h8->next(), h14, v3, h8->edge(), h8->face());
+    h9->setNeighbors(h9->next(), h12, v0, h9->edge(), h9->face());
     
-
-    return e0->halfedge()->vertex();
+    return v4;
   }
 
 
