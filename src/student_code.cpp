@@ -88,6 +88,11 @@ namespace CGL
     HalfedgeCIter h = this->halfedge();
     Vector3D ret = Vector3D();
     do {
+      if (h->face()->isBoundary()) {
+        h = h->twin()->next();
+        continue;
+      }
+
       FaceCIter f = h->face();
       vector<Vector3D> pts;
       HalfedgeCIter nh = h->next();
@@ -159,7 +164,27 @@ namespace CGL
     // TODO Part 5.
     // This method should split the given edge and return an iterator to the newly inserted vertex.
     // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
-    return VertexIter();
+    if (e0->isBoundary()) {
+      return e0->halfedge()->vertex();
+    }
+    HalfedgeIter h0 = e0->halfedge();
+    HalfedgeIter h1 = h0->next();
+    HalfedgeIter h2 = h1->next();
+    HalfedgeIter h3 = h0->twin();
+    HalfedgeIter h4 = h3->next();
+    HalfedgeIter h5 = h4->next();
+    HalfedgeIter h6 = h1->twin();
+    HalfedgeIter h7 = h5->twin();
+    HalfedgeIter h8 = h4->twin();
+    HalfedgeIter h9 = h2->twin();
+    VertexIter v0 = h0->vertex();
+    VertexIter v1 = h1->vertex();
+    VertexIter v2 = h2->vertex();
+    VertexIter v3 = h5->vertex();
+    FaceIter f0 = h0->face();
+    FaceIter f1 = h3->face();
+
+    return e0->halfedge()->vertex();
   }
 
 
