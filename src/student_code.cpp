@@ -160,7 +160,56 @@ namespace CGL
     // This method should split the given edge and return an iterator to the newly inserted vertex.
     // The halfedge of this vertex should point along the edge that was split, rather than the new edges.
     if (e0->isBoundary()) {
-      return e0->halfedge()->vertex();
+      // This is the Halfedge that is on the face
+      HalfedgeIter h0 = e0->halfedge();
+      if (h0->isBoundary()) {
+        h0 = h0->twin();
+      }
+
+      // removed h4, h5, h7, h8, v3
+      HalfedgeIter h1 = h0->next();
+      HalfedgeIter h2 = h1->next();
+      HalfedgeIter h3 = h0->twin();
+      HalfedgeIter h6 = h1->twin();
+      HalfedgeIter h9 = h2->twin();
+      VertexIter v0 = h0->vertex();
+      VertexIter v1 = h1->vertex();
+      VertexIter v2 = h2->vertex();
+      FaceIter f0 = h0->face();
+      FaceIter f1 = h3->face();
+
+      // removed f3, e3, h14, h15
+      VertexIter v4 = this->newVertex();
+      FaceIter f2 = this->newFace();
+      EdgeIter e1 = this->newEdge();
+      EdgeIter e2 = this->newEdge();
+      HalfedgeIter h10 = this->newHalfedge();
+      HalfedgeIter h11 = this->newHalfedge();
+      HalfedgeIter h12 = this->newHalfedge();
+      HalfedgeIter h13 = this->newHalfedge();
+
+      v4->position = (v0->position + v1->position) / 2.0;
+      v4->halfedge() = h0;
+
+      f2->halfedge() = h10;
+
+      e1->halfedge() = h10;
+      e2->halfedge() = h2;
+
+      // setNeighbors(next, twin, vertex, edge, face)
+      h10->setNeighbors(h11, h13, v0, e1, f2);
+      h11->setNeighbors(h12, h2, v4, e2, f2);
+      h12->setNeighbors(h10, h9, v2, h9->edge(), f2);
+      h13->setNeighbors(h3->next(), h10, v4, e1, f2); // changed this
+
+      h0->setNeighbors(h1, h3, v4, e0, f0);
+      h2->setNeighbors(h0, h11, v2, e2, f0);
+      h9->setNeighbors(h9->next(), h12, v0, h9->edge(), h9->face());
+
+      v0->halfedge() = h10;
+      h9->edge()->halfedge() = h9;
+
+      return v4;
     }
     HalfedgeIter h0 = e0->halfedge();
     HalfedgeIter h1 = h0->next();
@@ -192,7 +241,7 @@ namespace CGL
     HalfedgeIter h14 = this->newHalfedge();
     HalfedgeIter h15 = this->newHalfedge();
 
-    v4->position = (v2->position + v3->position) / 2.0;
+    v4->position = (v0->position + v1->position) / 2.0;
     v4->halfedge() = h0;
 
     f2->halfedge() = h10;
@@ -217,7 +266,6 @@ namespace CGL
     h9->setNeighbors(h9->next(), h12, v0, h9->edge(), h9->face());
 
     v0->halfedge() = h10;
-
     h8->edge()->halfedge() = h8;
     h9->edge()->halfedge() = h9;
 
