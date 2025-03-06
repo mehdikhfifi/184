@@ -200,7 +200,7 @@ namespace CGL
       h10->setNeighbors(h11, h13, v0, e1, f2);
       h11->setNeighbors(h12, h2, v4, e2, f2);
       h12->setNeighbors(h10, h9, v2, h9->edge(), f2);
-      h13->setNeighbors(h3->next(), h10, v4, e1, f2); // changed this
+      h13->setNeighbors(h3->next(), h10, v4, e1, f1); // changed this
 
       h0->setNeighbors(h1, h3, v4, e0, f0);
       h2->setNeighbors(h0, h11, v2, e2, f0);
