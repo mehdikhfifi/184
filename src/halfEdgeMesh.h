@@ -368,6 +368,8 @@ namespace CGL
           */
          HalfedgeCIter halfedge( void ) const { return _halfedge; }
 
+         Vector3D newPosition;
+
          /**
           * returns the number of edges (or equivalently, vertices) of this face
           */
@@ -549,6 +551,7 @@ namespace CGL
           */
          const HalfedgeMesh& operator=( const HalfedgeMesh& mesh );
 
+         
          /**
           * The copy constructor likewise does a "deep" copy of the mesh (via the assignment operator).
           */
@@ -629,8 +632,7 @@ namespace CGL
           */
            EdgeIter       flipEdge( EdgeIter e ); ///< flip an edge, returning a pointer to the flipped edge
          VertexIter      splitEdge( EdgeIter e ); ///< split an edge, returning a pointer to the inserted midpoint vertex; the halfedge of this vertex should refer to one of the edges in the original mesh
-
-
+         VertexIter three_waybreak(Vector3D centroid);
          void check_for(HalfedgeIter h) {
           for (HalfedgeIter he = halfedgesBegin(); he != halfedgesEnd(); he++) {
             if (he == h)
