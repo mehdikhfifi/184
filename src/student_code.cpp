@@ -310,13 +310,22 @@ namespace CGL
     int ect = 0;
     for (EdgeIter e = mesh.edgesBegin(); e != mesh.edgesEnd(); e++) {
         HalfedgeIter h = e->halfedge();
-        VertexIter v0 = h->vertex();
-        VertexIter v1 = h->twin()->vertex();
-        VertexIter v2 = h->next()->next()->vertex();
-        VertexIter v3 = h->twin()->next()->next()->vertex();
 
-        e->newPosition = (3.0 / 8.0) * (v0->position + v1->position) +
-                         (1.0 / 8.0) * (v2->position + v3->position);
+        if (e->isBoundary()) {
+          VertexIter v0 = h->vertex();
+          VertexIter v1 = h->twin()->vertex();
+          e->newPosition = (1.0 / 2.0) * (v0->position + v1->position);
+        }
+        else {
+          VertexIter v0 = h->vertex();
+          VertexIter v1 = h->twin()->vertex();
+          VertexIter v2 = h->next()->next()->vertex();
+          VertexIter v3 = h->twin()->next()->next()->vertex();
+
+          e->newPosition = (3.0 / 8.0) * (v0->position + v1->position) +
+                          (1.0 / 8.0) * (v2->position + v3->position);
+        }
+        
 
         ect++;
         e->isNew = false;
@@ -329,7 +338,15 @@ namespace CGL
 
     EdgeIter eiter = mesh.edgesBegin();
     for (int i = 0; i < ect; i++) {
-      if (eiter->isNew) continue;
+      if (eiter->isNew) {
+        eiter++;
+        continue;
+      }
+      if (eiter->isBoundary()) {
+        eiter++;
+        continue;
+      }
+
       VertexIter v = mesh.splitEdge(eiter);
       v->isNew = true;
       v->newPosition = eiter->newPosition;
@@ -338,6 +355,7 @@ namespace CGL
       if (h->vertex() != v) {
         h = h->twin();
       }
+
       do {
         h = h->twin()->next();
         h->edge()->isNew = true;
