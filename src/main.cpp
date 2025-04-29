@@ -76,63 +76,25 @@ int loadFile(MeshEdit* collada_viewer, const char* path) {
 
 int main( int argc, char** argv ) {
 
-  // sanity check for argument passing
-  if (argc != 2) {
-    msg("Please make sure to launch the executable with a path to the scene file as an argument! \n Example: ./meshedit ../../curve1.bzc"); 
+  // require exactly two scene files
+  if (argc != 3) {
+    msg("Usage: ./meshedit <source.dae> <target.dae>");
     exit(0);
   }
 
-  const char* path = argv[1];
-  std::string path_str = path;
- 
-  //////////////////////////////
-  // Bezier curve viewer code //
-  //////////////////////////////
-
-  if (path_str.substr(path_str.length()-4, 4) == ".bzc")
-  {
-    // Each file contains a single Bezier curve's control points
-    FileHandle file_handle;
-    file_handle.file = fopen(path, "r");
-
-    int numControlPoints;
-    fscanf(file_handle.file, "%d", &numControlPoints);
-
-    BezierCurve curve(numControlPoints);
-    curve.loadControlPoints(file_handle.file);
-
-    // Create viewer
-    Viewer viewer = Viewer();
-    viewer.set_renderer(&curve);
-    viewer.init();
-    viewer.start();
-
-    exit(EXIT_SUCCESS);
-
-    return 0;
-  }
-
-  // create viewer
-  Viewer viewer = Viewer();
-
-  // create collada_viewer
+  Viewer viewer;
   MeshEdit* collada_viewer = new MeshEdit();
-
-  // set collada_viewer as renderer
   viewer.set_renderer(collada_viewer);
-
-  // init viewer
   viewer.init();
 
-  // load tests
-  if (loadFile(collada_viewer, argv[1]) < 0) 
-  {
-    msg("Failed loading the scene file. Make sure the file pathing is correct!");
+  // load both meshes
+  if (loadFile(collada_viewer, argv[1]) < 0 ||
+      loadFile(collada_viewer, argv[2]) < 0) {
+    msg("Failed loading one of the scene files. Check your paths!");
     exit(0);
   }
 
-  // start viewer
+  // now start the render loop
   viewer.start();
-
   return 0;
 }
